@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -16,7 +15,7 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         if ($request->hasFile('profile_picture')) {
-            // Hapus foto profil lama dari S3
+            // Hapus foto profil lama dari S3 jika ada
             if ($user->profile_picture) {
                 Storage::disk('s3')->delete($user->profile_picture);
             }
@@ -34,4 +33,3 @@ class ProfileController extends Controller
         return redirect()->back()->with('status', 'Profile updated successfully.');
     }
 }
-

@@ -21,7 +21,7 @@ class ProfileController extends Controller
             }
 
             // Upload foto profil baru ke S3
-            $path = $request->file('profile_picture')->store('profile_pictures', 's3');
+            $path = $request->file('profile_picture')->store('profile_pictures', 's3', 'public');
             Storage::disk('s3')->setVisibility($path, 'public');
 
             // Simpan path ke database

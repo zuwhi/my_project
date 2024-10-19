@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 
 Route::view('/', 'welcome');
 
@@ -13,9 +12,6 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-// Tambahkan route ini untuk update profile
-Route::middleware('auth')->group(function () {
-    Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
-});
+
 
 require __DIR__.'/auth.php';

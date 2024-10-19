@@ -4,6 +4,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
@@ -14,6 +15,7 @@ new #[Layout('layouts.guest')] class extends Component
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public $profile_picture; // Tambahkan property untuk profile picture
 
     /**
      * Handle an incoming registration request.
@@ -24,9 +26,18 @@ new #[Layout('layouts.guest')] class extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'profile_picture' => ['nullable', 'image', 'max:2048'], // Validasi gambar
         ]);
 
+        // Hash password
         $validated['password'] = Hash::make($validated['password']);
+
+        // Upload gambar ke S3 jika ada
+        if ($this->profile_picture) {
+            $profilePicturePath = $this->profile_picture->store('profile_pictures', 's3');
+            Storage::disk('s3')->setVisibility($profilePicturePath, 'public'); // Set visibility ke public
+            $validated['profile_picture'] = Storage::disk('s3')->url($profilePicturePath); // Simpan URL gambar di database
+        }
 
         event(new Registered($user = User::create($validated)));
 
@@ -37,7 +48,7 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <form wire:submit="register">
+    <form wire:submit="register" enctype="multipart/form-data">
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -55,24 +66,27 @@ new #[Layout('layouts.guest')] class extends Component
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
-
             <x-text-input wire:model="password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
+                          type="password"
+                          name="password"
+                          required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
             <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
+                          type="password"
+                          name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
+
+        <!-- Profile Picture -->
+        <div class="mt-4">
+            <x-input-label for="profile_picture" :value="__('Profile Picture')" />
+            <input wire:model="profile_picture" id="profile_picture" class="block mt-1 w-full" type="file" name="profile_picture" accept="image/*" />
+            <x-input-error :messages="$errors->get('profile_picture')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">

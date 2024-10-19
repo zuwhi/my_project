@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads; 
 
 new #[Layout('layouts.guest')] class extends Component {
     use WithFileUploads; // Tambahkan trait ini

@@ -8,9 +8,8 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.guest')] class extends Component
-{
-        use WithFileUploads; // Tambahkan trait ini
+new #[Layout('layouts.guest')] class extends Component {
+    use WithFileUploads; // Tambahkan trait ini
 
     public string $name = '';
     public string $email = '';
@@ -25,7 +24,7 @@ new #[Layout('layouts.guest')] class extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
             'profile_picture' => ['nullable', 'image', 'max:2048'], // Validasi gambar
         ]);
@@ -40,11 +39,12 @@ new #[Layout('layouts.guest')] class extends Component
             $validated['profile_picture'] = Storage::disk('s3')->url($profilePicturePath); // Simpan URL gambar di database
         }
 
-        event(new Registered($user = User::create($validated)));
+        event(new Registered(($user = User::create($validated))));
 
         Auth::login($user);
 
         $this->redirect(route('dashboard', absolute: false), navigate: true);
+    }
 }; ?>
 
 <div>

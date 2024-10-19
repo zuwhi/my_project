@@ -49,7 +49,7 @@ new #[Layout('layouts.guest')] class extends Component {
 }; ?>
 
 <div>
-    <form wire:submit="register" enctype="multipart/form-data"> <!-- Tambahkan enctype -->
+    <form wire:submit="register">
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -65,6 +65,15 @@ new #[Layout('layouts.guest')] class extends Component {
                 required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
+
+        <!-- Profile Picture -->
+        <div class="mt-4">
+            <x-input-label for="profile_picture" :value="__('Profile Picture')" />
+            <input wire:model="profile_picture" id="profile_picture" class="block mt-1 w-full" type="file"
+                name="profile_picture" accept="image/*" />
+            <x-input-error :messages="$errors->get('profile_picture')" class="mt-2" />
+        </div>
+
 
         <!-- Password -->
         <div class="mt-4">
@@ -84,14 +93,6 @@ new #[Layout('layouts.guest')] class extends Component {
                 type="password" name="password_confirmation" required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <!-- Profile Picture -->
-        <div class="mt-4">
-            <x-input-label for="profile_picture" :value="__('Profile Picture')" />
-            <x-text-input wire:model="profile_picture" id="profile_picture" class="block mt-1 w-full" type="file"
-                name="profile_picture" accept="image/*" />
-            <x-input-error :messages="$errors->get('profile_picture')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">

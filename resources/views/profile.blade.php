@@ -8,23 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-                @csrf
-                @method('PATCH')
 
-                <!-- Profile Picture -->
-                <div class="mt-4">
-                    <label for="profile_picture">Profile Picture</label>
-                    <input type="file" id="profile_picture" name="profile_picture" accept="image/*" />
-                </div>
-
-                <!-- Other profile fields -->
-                <!-- Misalnya field untuk nama atau email pengguna -->
-
-                <div class="mt-4">
-                    <button type="submit">Save</button>
-                </div>
-            </form>
 
 
             <!-- Update Profile Information -->
